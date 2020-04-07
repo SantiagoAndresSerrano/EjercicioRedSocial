@@ -5,7 +5,10 @@
  */
 package Modelo;
 
+import java.awt.Component;
+import java.awt.Graphics;
 import java.util.ArrayList;
+import javax.swing.Icon;
 
 /**
  *
@@ -13,6 +16,21 @@ import java.util.ArrayList;
  */
 public class Estudiante 
 {
+    private Icon icono=new Icon() {
+        @Override
+        public void paintIcon(Component cmpnt, Graphics grphcs, int i, int i1) {
+        }
+
+        @Override
+        public int getIconWidth() {
+            return 0;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 0;
+        }
+    };
     private String nombre,apellido,nick,clave,correo;
     private int edad;
     private ArrayList<Comentario> comentarios;
@@ -25,8 +43,18 @@ public class Estudiante
         this.correo = correo;
         this.edad = edad;
         this.comentarios=new ArrayList<>();
-        
+         
     }
+
+    public Icon getIcono() {
+        return icono;
+    }
+
+    public void setIcono(Icon icono) {
+        this.icono = icono;
+    }
+
+
 
     @Override
     public String toString() {

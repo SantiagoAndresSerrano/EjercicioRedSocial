@@ -54,8 +54,8 @@ public class Controlador implements ActionListener
         this.f = f;
         this.ingresar = ingresar;
         this.usuario = usuario;
-        estudiantes=new ArrayList<>();
-        grupos=new ArrayList<>();
+        this.estudiantes=new ArrayList<>();
+        this.grupos=new ArrayList<>();
         this.ig=ig;
         actionListener(this);
         
@@ -69,11 +69,12 @@ public class Controlador implements ActionListener
     ingresar.btnListar.addActionListener(al);
     ingresar.btnUsuario.addActionListener(al);
     
-    usuario.btnComentar.addActionListener(al);
-    usuario.btnSubirImagen.addActionListener(al);
+    usuario.jButton2.addActionListener(al);
+    usuario.btnSubirImagen1.addActionListener(al);
     ig.jButton1.addActionListener(al);
-    usuario.btnSalir.addActionListener(al);
-    ig.btnSalir.addActionListener(al);
+    usuario.jButton1.addActionListener(al);
+    usuario.btnSubirImagen.addActionListener(al);
+    
     }
     
      public void limpiar(){
@@ -106,25 +107,16 @@ public class Controlador implements ActionListener
             this.ig.setVisible(false);
             this.ig.jtCorreo.setText("");
             this.ig.jtNombre.setText("");
-        
-            this.usuario.jLabel3.setIcon(new Icon() {
-                @Override
-                public void paintIcon(Component cmpnt, Graphics grphcs, int i, int i1) {
-                }
-
-                @Override
-                public int getIconWidth() {
-                    return 1;
-                }
-
-                @Override
-                public int getIconHeight() {
-                    return 0;
-                }
-            });
+            
+            
+            
+            
         this.usuario.setVisible(false);
         
         this.usuario.jTextArea1.setText("");
+        
+        existeEstudiante(ingresar.jtCorreoIngreso.getText()).setIcono(usuario.jLabel3.getIcon());
+        
         }
         
         if(ae.getActionCommand().equals("Registrar Usuario"))
@@ -139,6 +131,7 @@ public class Controlador implements ActionListener
            
            
            e=new Estudiante(nombre,apellido,nick,clave,correo,edad);
+           
            estudiantes.add(e);
            limpiar();
             }catch(NumberFormatException e){
@@ -157,11 +150,12 @@ public class Controlador implements ActionListener
         if(existeEstudiante(ingresar.jtCorreoIngreso.getText())!=null)
         {
             if(existeEstudiante(ingresar.jtCorreoIngreso.getText()).getClave().equals(ingresar.jtContrasenaIngreso.getText()))
-            {   
-                
+            {
                 estudianteAux=existeEstudiante(ingresar.jtCorreoIngreso.getText());
+                usuario.jLabel3.setIcon(estudianteAux.getIcono());
                 
-                actionListener(this);
+                
+                
                 usuario.labelNombre.setText(estudianteAux.getNombre()+" "+estudianteAux.getApellido());
                 usuario.labelCorreo.setText(estudianteAux.getCorreo());
                 usuario.labelEdad.setText(Integer.toString(estudianteAux.getEdad()));
@@ -174,32 +168,35 @@ public class Controlador implements ActionListener
             }else{JOptionPane.showMessageDialog(null, "Contraseña incorrecta");}
             
             
-        }else
-            {
-            JOptionPane.showMessageDialog(null, "No existe el correo");
-            }
+        }
       
         
         }
+        
         if(ae.getActionCommand().equals("Comentar"))
         {
+          
             
             Date fech1 =new Date();
-            
-           if(estudianteAux.getComentarios().size()<10)
+          
+           if(existeEstudiante(ingresar.jtCorreoIngreso.getText()).getComentarios().size()<10)
            {
-               
+               System.out.println(existeEstudiante(ingresar.jtCorreoIngreso.getText()).getComentarios().size());
            estudianteAux.getComentarios().add(new Comentario(usuario.jTextArea1.getText(),fech1));
-               
-           }
-           else{
-               JOptionPane.showMessageDialog(null,"Solo puedes hacer 10 comentarios");
+           usuario.jTextArea1.setText("");  
+             
+           }else{
+           
+           JOptionPane.showMessageDialog(null, "Solo puedes hacer 10 comentarios");
            }
            
         }
         
+        
+        
         if(ae.getActionCommand().equals("Subir imagen"))
         {
+            
             
         }
         
@@ -217,11 +214,7 @@ public class Controlador implements ActionListener
                     )
             {
             
-                try {
-                    throw new Exception("Campos vacios");
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage());
-                }
+                JOptionPane.showMessageDialog(null, "Campos vacios");
             }
             else{
             String nombre=ingresar.jtNombreG.getText();
@@ -257,8 +250,9 @@ public class Controlador implements ActionListener
             for (int i = 0; i < grupos.size(); i++) {
                 if(grupos.get(i).getNombre().equals(ingresar.jtNombreGrupo.getText()))
                 {
+                    
                     ingresar.jTextArea1.setText(grupos.get(i).getEstudiantes().toString());
-                
+                    
                 }
             }
             
@@ -267,36 +261,30 @@ public class Controlador implements ActionListener
         
         
         
-        if(ae.getActionCommand().equals("Registrar Usuario"))
+        if(ae.getActionCommand().equals("Registrar"))
         {
-        
+         boolean agregado=false;
         String nombre=ig.jtNombre.getText();
             String correo=ig.jtCorreo.getText();
             
-            for (int i = 0; i < this.grupos.size(); i++) {
+            for (int i = 0; i < this.grupos.size(); i++) 
+            {
                 if(grupos.get(i).getNombre().equals(nombre))
-                {
-                    
+                {                   
                     if(existeEstudiante(correo)!=null)
                     {
                         grupos.get(i).getEstudiantes().add(existeEstudiante(correo));
-                        JOptionPane.showMessageDialog(null, "Estudiante "+existeEstudiante(correo).getNombre()+" agregado al grupo con exito"); 
-                    }else
-                    {
-                    
-                   
+                        agregado=true;
                     }
-                    
-                
-                
                 }
+                    
             }
-            this.ig.setVisible(false);
+            if(agregado==true){
+                JOptionPane.showMessageDialog(null,"Estudiante Agregado");
+                 this.ig.setVisible(false); 
+            }
+             
         }
-        
-         
-        
-        
     }
     
     public Estudiante existeEstudiante(String correo)
